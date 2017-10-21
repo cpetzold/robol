@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour {
 
-	public float maxSpeed = 10f;
+	public float acceleration = 10f;
+
 	private Rigidbody2D rigidBody2D;
 
 	void Start () {
@@ -13,6 +14,7 @@ public class PlayerMovement : MonoBehaviour {
 
 	void FixedUpdate () {
 		float move = Input.GetAxis ("Horizontal");
-		rigidBody2D.velocity = new Vector2 (move * maxSpeed, rigidBody2D.velocity.y);
+
+		rigidBody2D.AddForce (new Vector2 (move * acceleration, 0));
 	}
 }
