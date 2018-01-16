@@ -7,11 +7,14 @@ public class PlayerMovement : MonoBehaviour {
 	public CircleCollider2D groundCheck;
 
 	public string jumpButton;
+	public string boostAxis;
 	public string horizontalAxis;
+	public string verticalAxis;
 
 	public float acceleration = 10f;
 	public float maxSpeed = 20f;
 	public float jumpForce = 20f;
+	public float boostForce = 20f;
 
 	private Rigidbody2D rigidBody2D;
 	private bool jumpPressed = false;
@@ -32,12 +35,21 @@ public class PlayerMovement : MonoBehaviour {
 	}
 
 	void FixedUpdate () {
-		float move = Input.GetAxis (horizontalAxis);
+		float horizontal = Input.GetAxis (horizontalAxis);
+		float vertical = Input.GetAxis (verticalAxis);
+		float boost = Input.GetAxis (boostAxis);
 
-		rigidBody2D.AddForce (Vector2.right * move * acceleration);
+		rigidBody2D.AddForce (Vector2.right * horizontal * acceleration);
+		if (boost > 0) {
+			rigidBody2D.AddForce (new Vector2 (horizontal, -vertical) * boostForce);
+		}
+			
+
 		if (Mathf.Abs(rigidBody2D.velocity.x) > maxSpeed) {
 			rigidBody2D.velocity = new Vector2 (Mathf.Clamp (rigidBody2D.velocity.x, -maxSpeed, maxSpeed), rigidBody2D.velocity.y);
 		}
+
+
 
 		bool grounded = groundCheck.IsTouchingLayers (groundLayer);
 
