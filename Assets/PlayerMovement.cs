@@ -38,20 +38,17 @@ public class PlayerMovement : MonoBehaviour {
 		float horizontal = Input.GetAxis (horizontalAxis);
 		float vertical = Input.GetAxis (verticalAxis);
 		float boost = Input.GetAxis (boostAxis);
+		bool grounded = groundCheck.IsTouchingLayers (groundLayer);
 
 		rigidBody2D.AddForce (Vector2.right * horizontal * acceleration);
 		if (boost > 0) {
-			rigidBody2D.AddForce (new Vector2 (horizontal, -vertical) * boostForce);
+			rigidBody2D.AddForce ((grounded ? Vector2.right * horizontal * 0.5f : Vector2.up) * boostForce);
 		}
-			
 
 		if (Mathf.Abs(rigidBody2D.velocity.x) > maxSpeed) {
 			rigidBody2D.velocity = new Vector2 (Mathf.Clamp (rigidBody2D.velocity.x, -maxSpeed, maxSpeed), rigidBody2D.velocity.y);
 		}
 
-
-
-		bool grounded = groundCheck.IsTouchingLayers (groundLayer);
 
 		if (jumpPressed) {
 			if (grounded) {
