@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour {
+	public LayerMask groundLayer;
+	public CircleCollider2D groundCheck;
+
 	public string jumpButton;
 	public string horizontalAxis;
 
@@ -10,8 +13,9 @@ public class PlayerMovement : MonoBehaviour {
 	public float maxSpeed = 20f;
 	public float jumpForce = 20f;
 
-	private bool jump = false;
 	private Rigidbody2D rigidBody2D;
+	private bool jumpPressed = false;
+	private bool hasDoubleJump = true;
 
 	void Start () {
 		rigidBody2D = GetComponent<Rigidbody2D> ();
@@ -19,8 +23,12 @@ public class PlayerMovement : MonoBehaviour {
 
 	void Update() {
 		if (Input.GetButtonDown (jumpButton)) {
-			jump = true;
+			jumpPressed = true;
 		}
+	}
+
+	void Jump() {
+		rigidBody2D.AddForce (Vector2.up * jumpForce);
 	}
 
 	void FixedUpdate () {
@@ -31,9 +39,18 @@ public class PlayerMovement : MonoBehaviour {
 			rigidBody2D.velocity = new Vector2 (Mathf.Clamp (rigidBody2D.velocity.x, -maxSpeed, maxSpeed), rigidBody2D.velocity.y);
 		}
 
-		if (jump) {
-			rigidBody2D.AddForce (Vector2.up * jumpForce);
-			jump = false;
+		bool grounded = groundCheck.IsTouchingLayers (groundLayer);
+
+		if (jumpPressed) {
+			if (grounded) {
+				Jump ();
+				hasDoubleJump = true;
+			} else if (hasDoubleJump) {
+				Jump ();
+				hasDoubleJump = false;
+			}
 		}
+
+		jumpPressed = false;
 	}
 }
