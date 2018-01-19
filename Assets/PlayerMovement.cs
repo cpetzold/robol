@@ -7,20 +7,20 @@ public class PlayerMovement : MonoBehaviour {
 	public LayerMask groundLayer;
 	public CircleCollider2D groundCheck;
 
-	public int playerId = 0;
+	public int playerIndex = 0;
 
 	public float acceleration = 10f;
 	public float maxSpeed = 20f;
 	public float jumpForce = 20f;
 	public float boostForce = 20f;
 
-	private Rigidbody2D rigidBody2D;
-	private Player player;
-	private bool jumpPressed = false;
-	private bool hasDoubleJump = true;
+	Rigidbody2D rigidBody2D;
+	Player player;
+	bool jumpPressed = false;
+	bool hasDoubleJump = true;
 
 	void Awake() {
-		player = ReInput.players.GetPlayer(playerId);
+		player = ReInput.players.GetPlayer(playerIndex);
 		rigidBody2D = GetComponent<Rigidbody2D>();
 	}
 
@@ -36,7 +36,7 @@ public class PlayerMovement : MonoBehaviour {
 
 	void FixedUpdate () {
 		float horizontal = player.GetAxis ("Horizontal");
-		float vertical = player.GetAxis ("Vertical");
+		//float vertical = player.GetAxis ("Vertical");
 		bool grounded = groundCheck.IsTouchingLayers (groundLayer);
 
 		rigidBody2D.AddForce (Vector2.right * horizontal * acceleration);
